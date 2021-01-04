@@ -162,10 +162,12 @@ def remove_false_hypen(string):
 
 def transform_duration(txt):
     # 1. Remove false hypen 
-    # Add space between numeric and alphabet
+    # Add space between special character and word (e.g. to separate `,` from `word,`)
     # Remove `.` and `,` at the start and end of string
+    # Add space between numeric and alphabet
     txt = remove_false_hypen(txt)
-    txt = re.sub(r"([0-9]+(\.[0-9]+)?)",r" \1 ", txt).lower().strip().rstrip('.|,').lstrip('.|,')
+    txt = re.sub(r"(?<=\w)([!?,])",r" \1 ", txt).lower().strip().rstrip('.|,').lstrip('.|,')
+    txt = re.sub(r"([0-9]+(\.[0-9]+)?)",r" \1 ", txt).strip()
 
     # 2. Detect the number of units
     word_list = txt.split()
@@ -237,8 +239,8 @@ def transform_duration(txt):
             except: # txt contains other words
                 return 0.0, 'unidentified'
 
-print(transform_duration('6-months'))
-# print(transform_duration('one and a half thousand days'))
+# for x in ['1 and 1/2 day', '3 1/2 - 4 months', '1, 2 weeks', '5 months,3week']:
+#     print(f'{x:20s}', transform_duration(x))
 
 # # Cases
 
