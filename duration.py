@@ -231,6 +231,15 @@ def transform_duration(txt):
                 # standardise both units to day and sum
                 grouped_words = split_to_double(clean_string)
                 return sum([convert_to_day(x.split()[0],x.split()[1]) for x in grouped_words]), 'day'
+            elif 'and' in left_string[0]: # left_string contains `and` e.g. ['1  and  30 ']
+                # get list of N and units
+                # standardise both units to day and sum
+                N_list = [x.strip() for x in left_string[0].split('and')]
+                unit_list = unit_string[0].split()
+                try: 
+                    return sum([convert_to_day(x[0], x[1]) for x in zip(N_list, unit_list)]), 'day'
+                except: # left_string contains other words
+                    return 0.0, 'unidentified'
             else: # clean_string contains other words
                 return 0.0, 'unidentified'
         else: # 1 unit per chunk
@@ -239,8 +248,6 @@ def transform_duration(txt):
             except: # txt contains other words
                 return 0.0, 'unidentified'
 
-# for x in ['1 and 1/2 day', '3 1/2 - 4 months', '1, 2 weeks', '5 months,3week']:
-#     print(f'{x:20s}', transform_duration(x))
 
 # # Cases
 
@@ -251,17 +258,18 @@ def transform_duration(txt):
 
 # # 1 unit
 # print('\n(2) Cases with a unit\n=======')
-# for x in ['2 days', '2 to 4 days', '11/2 day', '3 1/2 - 4 months', 
+# for x in ['2 days', '2 to 4 days', '11/2 day', '3 1/2 - 4 months', '6-months',
 #           ', 4 days', '2 or 3 weeks', 'A day or two', 'a day.',
 #           '1 and 1/2 day', 'one and a half day', 'one and a half thousand days', 
 #             '1 and a half day', # cannot take into account string with numbers as mixture of int and words
-#            '6-months', 'a day an half'
+#             'a day an half'
 #          ]:
 #     print(f'{x:20s}', transform_duration(x))
 
 # # 2 units
 # print('\n(3) Cases with more than one unit\n=======')
-# for x in ['1 day to 2 weeks', '1 year 6 months', '5 months,3week']:
+# for x in ['1 day to 2 weeks', '1 year 6 months', '5 months,3week',
+#          '1 year and 30 d']:
 #     print(f'{x:20s}', transform_duration(x))
 
 # # Not considered
